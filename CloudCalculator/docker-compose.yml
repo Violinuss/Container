@@ -1,14 +1,22 @@
 version: '3.8'
 
 services:
+  assessment-service:
+    image: mrksdh/assessment
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
   cloud-calculator:
     build: .
     ports:
-      - "8080:8080"
-    depends_on:
-      - assessment
-
-  assessment:
-    image: mrksdh/assessment
-    ports:
       - "8081:8080"
+    depends_on:
+      - assessment-service
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

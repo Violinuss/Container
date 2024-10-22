@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  cloud-calculator:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - assessment
+
+  assessment:
+    image: mrksdh/assessment
+    ports:
+      - "8081:8080"

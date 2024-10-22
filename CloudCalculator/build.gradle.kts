@@ -1,3 +1,16 @@
+tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
+	mainClass.set("com.example.CloudCalculatorApplication")
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs("src/main/java")
+		}
+	}
+}
+
+
 plugins {
 	java
 	id("org.springframework.boot") version "3.3.4"
@@ -9,7 +22,7 @@ version = "0.0.1-SNAPSHOT"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
+		languageVersion.set(JavaLanguageVersion.of(17))
 	}
 }
 
@@ -25,9 +38,7 @@ repositories {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

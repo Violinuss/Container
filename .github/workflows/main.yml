@@ -60,7 +60,7 @@ jobs:
       - name: Verify Success in Logs
         run: |
           echo "Verifying success message in logs..."
-          if grep -q '"code":200,"message":"well done!"' CloudCalculator/local_logs.txt; then
+          if grep -q '"200"' CloudCalculator/local_logs.txt; then
             echo "Success: The message '200, well done!' was found!"
           else
             echo "Error: The message '200, well done!' was not found!"

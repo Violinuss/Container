@@ -50,6 +50,12 @@ jobs:
           cd CloudCalculator/
           docker-compose logs cloud-calculator | tee local_logs.txt 
 
+      - name: Verify if local_logs.txt exists
+        run: |
+          if [ ! -f CloudCalculator/local_logs.txt ]; then
+            echo "Error: local_logs.txt does not exist!"
+            exit 1
+          fi
       - name: Verify Success in Logs
         run: |
           if grep -q '"code":200,"message":"well done!"' local_logs.txt; then

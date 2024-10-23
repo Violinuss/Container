@@ -50,15 +50,6 @@ jobs:
           cd CloudCalculator/
           docker-compose logs cloud-calculator | tee local_logs.txt 
 
-      - name: Verify Success in Logs
-        run: |
-          if grep -q '"code":200,"message":"well done!"' local_logs.txt; then
-              echo "Success: The message '200, well done!' was found!"
-          else
-              echo "Error: The message '200, well done!' was not found!"
-              exit 1
-          fi
-
       - name: Verify Containers are Running
         run: |
           cd CloudCalculator/

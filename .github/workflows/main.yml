@@ -47,17 +47,17 @@ jobs:
       run: sleep 10  # Optional: Wait for 10 seconds to ensure containers are ready
 
     - name: Check Logs for assessment-container
-       run: |
+      run: |
           echo "Logs from assessment:"
           docker logs assessment | tee assessment_logs.txt  # Log the output to a file
 
-      - name: Check Logs for local-container
-        run: |
+    - name: Check Logs for local-container
+      run: |
           echo "Logs from local-container:"
           docker logs local-container | tee local_logs.txt  # Log the output to a file
 
-      - name: Verify success in logs
-        run: |
+    - name: Verify success in logs
+      run: |
           if grep -q '"code":200,"message":"well done!"' local_logs.txt; then
               echo "Success: The message '200, well done!' was found!"
           else
@@ -65,10 +65,10 @@ jobs:
               exit 1
           fi
 
-      - name: Verify containers are running
-        run: docker ps
+    - name: Verify containers are running
+      run: docker ps
 
-      - name: Cleanup
-        run: |
+    - name: Cleanup
+      run: |
           docker stop assessment local-container || exit 0
           docker rm -f assessment local-container || exit 0

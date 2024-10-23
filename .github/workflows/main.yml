@@ -9,55 +9,42 @@ on:
       - main
 
 jobs:
-  build:
+  system-assessment:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-    - name: Install Docker Compose
-      run: sudo apt-get update && sudo apt-get install docker-compose -y
+      - name: Build and Run with Docker Compose
+        run: |
+          docker-compose up -d --build || exit 1
 
-    - name: Pull and run given Docker image
-      run: |
-          docker pull mrksdh/assessment || exit 1
-          docker run -d -p 8080:8080 --name assessment mrksdh/assessment || exit 1
-
-    - name: Wait for assessment-container to be ready
-      run: |
+      - name: Wait for Services to be Ready
+        run: |
           for i in {1..10}; do
             if curl -s http://localhost:8080/v1/dataset; then
-              echo "Assessment container is ready!"
+              echo "Services are ready!"
               break
             fi
-            echo "Waiting for assessment container..."
+            echo "Waiting for services..."
             sleep 3
           done || exit 1
 
-    - name: Build local Dockerfile and run container
-      run: |
-          docker build -t my-local-container -f CloudCalculator/Dockerfile .
-          docker run -d --name local-container --link assessment my-local-container || exit 1
+      - name: Check Logs for Assessment Service
+        run: |
+          echo "Logs from assessment service:"
+          docker-compose logs assessment-service | tee assessment_logs.txt  # Protokolliere die Logs in eine Datei
 
-    - name: Wait for containers to be ready
-      run: sleep 10  # Optional: Wait for 10 seconds to ensure containers are ready
+      - name: Check Logs for Cloud Calculator
+        run: |
+          echo "Logs from cloud-calculator:"
+          docker-compose logs cloud-calculator | tee local_logs.txt  # Protokolliere die Logs in eine Datei
 
-    - name: Check Logs for assessment-container
-      run: |
-          echo "Logs from assessment:"
-          docker logs assessment | tee assessment_logs.txt  # Log the output to a file
-
-    - name: Check Logs for local-container
-      run: |
-          echo "Logs from local-container:"
-          docker logs local-container | tee local_logs.txt  # Log the output to a file
-
-    - name: Verify success in logs
-      run: |
+      - name: Verify Success in Logs
+        run: |
           if grep -q '"code":200,"message":"well done!"' local_logs.txt; then
               echo "Success: The message '200, well done!' was found!"
           else
@@ -65,10 +52,9 @@ jobs:
               exit 1
           fi
 
-    - name: Verify containers are running
-      run: docker ps
+      - name: Verify Containers are Running
+        run: docker-compose ps
 
-    - name: Cleanup
-      run: |
-          docker stop assessment local-container || exit 0
-          docker rm -f assessment local-container || exit 0
+      - name: Cleanup
+        run: |
+          docker-compose down || exit 0 

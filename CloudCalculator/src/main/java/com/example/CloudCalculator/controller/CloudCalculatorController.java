@@ -18,37 +18,20 @@ public class CloudCalculatorController {
     @Autowired
     private CloudCalculatorService cloudCalculatorService;
 
-    @GetMapping("/dataset")
-    public ResponseEntity<String> calculateAndSubmit() {
+    @GetMapping("/result")
+    public ResponseEntity<Map<String, List<Result>>> getResult() {
         List<Event> events = cloudCalculatorService.fetchEvents();
 
-        List<Result> results = cloudCalculatorService.calculateUsage();
-
-        Map<String, List<Result>> requestBody = new HashMap<>();
-        requestBody.put("result", results);
-
-        ResponseEntity<String> response = cloudCalculatorService.submitResults(requestBody);
-
-        return ResponseEntity.ok(response.getBody());
-    }
-
-    @GetMapping("/result")
-    public ResponseEntity<List<Result>> getResult() {
-        List<Result> calculatedResults = cloudCalculatorService.calculateUsage();
-        return ResponseEntity.ok(calculatedResults);
-    }
-
-
-    @PostMapping("/result")
-    public ResponseEntity<String> receiveResults(@RequestBody Map<String, List<Result>> results) {
         List<Result> calculatedResults = cloudCalculatorService.calculateUsage();
 
-        Map<String, List<Result>> requestBody = new HashMap<>();
-        requestBody.put("result", calculatedResults);
+        if (calculatedResults.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
 
-        ResponseEntity<String> response = cloudCalculatorService.submitResults(requestBody);
+        Map<String, List<Result>> responseBody = new HashMap<>();
+        responseBody.put("result", calculatedResults);
 
-        return ResponseEntity.ok(response.getBody());
+        return ResponseEntity.ok(responseBody);
     }
 
 }

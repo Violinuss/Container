@@ -20,7 +20,7 @@ public class CloudCalculatorService {
 
 
     private final String DATASET = "http://assessment-service:8080/v1/dataset";
-    private final String RESULT = "http://assessment-service:8081/v1/result";
+    private final String RESULT = "http://assessment-service:8080/v1/result";
     private final RestTemplate restTemplate = new RestTemplate();
     private final EventStore eventStore = new EventStore();
 

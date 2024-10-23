@@ -38,6 +38,17 @@ jobs:
             sleep 3
           done || exit 1
 
+
+      - name: Test API Response
+        run: |
+             response=$(curl -s http://localhost:8080/v1/dataset)
+             echo "Response from Cloud Calculator: $response"
+             if echo "$response" | grep -q '"code":200,"message":"well done!"'; then
+             echo "Success message found!"
+             else
+             echo "Expected success message not found!"
+             exit 1
+             fi
       - name: Check Logs for Assessment Service
         run: |
           echo "Logs from assessment service:"

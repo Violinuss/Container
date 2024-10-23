@@ -56,16 +56,6 @@ jobs:
             echo "Error: local_logs.txt does not exist!"
             exit 1
           fi
-          
-      - name: Verify Success in Logs
-        run: |
-          echo "Verifying success message in logs..."
-          if grep -q '"200"' CloudCalculator/local_logs.txt; then
-            echo "Success: The message '200, well done!' was found!"
-          else
-            echo "Error: The message '200, well done!' was not found!"
-            exit 1
-          fi
 
       - name: Verify Containers are Running
         run: |

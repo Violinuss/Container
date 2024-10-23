@@ -27,7 +27,7 @@ jobs:
       working-directory: ./CloudCalculator
 
     - name: Run Tests
-      run: docker-compose exec cloud-calculator curl -X GET http://localhost:8081/v1/result
+      run: docker-compose exec -T cloud-calculator curl -X GET http://localhost:8081/v1/result
       working-directory: ./CloudCalculator
 
     - name: Tear down Docker Compose

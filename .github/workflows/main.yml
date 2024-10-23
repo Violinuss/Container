@@ -22,14 +22,53 @@ jobs:
     - name: Install Docker Compose
       run: sudo apt-get update && sudo apt-get install docker-compose -y
 
-    - name: Build and Run Docker Compose
-      run: docker-compose up --build -d
-      working-directory: ./CloudCalculator
+    - name: Pull and run given Docker image
+      run: |
+          docker pull mrksdh/assessment || exit 1
+          docker run -d -p 8080:8080 --name assessment mrksdh/assessment || exit 1
 
-    - name: Run Tests
-      run: docker-compose run --rm cloud-calculator curl -X GET http://assessment-service:8081/v1/result
-      working-directory: ./CloudCalculator
+    - name: Wait for assessment-container to be ready
+      run: |
+          for i in {1..10}; do
+            if curl -s http://localhost:8080/v1/dataset; then
+              echo "Assessment container is ready!"
+              break
+            fi
+            echo "Waiting for assessment container..."
+            sleep 3
+          done || exit 1
 
-    - name: Tear down Docker Compose
-      run: docker-compose down
-      working-directory: ./CloudCalculator
+    - name: Build local Dockerfile and run container
+      run: |
+          docker build -t my-local-container -f Dockerfile . || exit 1
+          docker run -d --name local-container --link assessment my-local-container || exit 1
+
+    - name: Wait for containers to be ready
+      run: sleep 10  # Optional: Wait for 10 seconds to ensure containers are ready
+
+    - name: Check Logs for assessment-container
+       run: |
+          echo "Logs from assessment:"
+          docker logs assessment | tee assessment_logs.txt  # Log the output to a file
+
+      - name: Check Logs for local-container
+        run: |
+          echo "Logs from local-container:"
+          docker logs local-container | tee local_logs.txt  # Log the output to a file
+
+      - name: Verify success in logs
+        run: |
+          if grep -q '"code":200,"message":"well done!"' local_logs.txt; then
+              echo "Success: The message '200, well done!' was found!"
+          else
+              echo "Error: The message '200, well done!' was not found!"
+              exit 1
+          fi
+
+      - name: Verify containers are running
+        run: docker ps
+
+      - name: Cleanup
+        run: |
+          docker stop assessment local-container || exit 0
+          docker rm -f assessment local-container || exit 0

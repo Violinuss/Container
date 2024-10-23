@@ -41,8 +41,8 @@ jobs:
       - name: Check Logs for Assessment Service
         run: |
           echo "Logs from assessment service:"
-          cd path/to/your/docker-compose/directory  # Sicherstellen, dass wir im richtigen Verzeichnis sind
-          docker-compose logs assessment-service | tee assessment_logs.txt  # Protokolliere die Logs in eine Datei
+          cd CloudCalculator/
+          docker-compose logs assessment-service | tee assessment_logs.txt 
 
       - name: Check Logs for Cloud Calculator
         run: |

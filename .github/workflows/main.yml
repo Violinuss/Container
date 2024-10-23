@@ -24,6 +24,7 @@ jobs:
 
       - name: Build and Run with Docker Compose
         run: |
+          cd CloudCalculator/
           docker-compose up -d --build || exit 1
 
       - name: Wait for Services to be Ready
@@ -40,12 +41,14 @@ jobs:
       - name: Check Logs for Assessment Service
         run: |
           echo "Logs from assessment service:"
+          cd path/to/your/docker-compose/directory  # Sicherstellen, dass wir im richtigen Verzeichnis sind
           docker-compose logs assessment-service | tee assessment_logs.txt  # Protokolliere die Logs in eine Datei
 
       - name: Check Logs for Cloud Calculator
         run: |
           echo "Logs from cloud-calculator:"
-          docker-compose logs cloud-calculator | tee local_logs.txt  # Protokolliere die Logs in eine Datei
+          cd CloudCalculator/
+          docker-compose logs cloud-calculator | tee local_logs.txt 
 
       - name: Verify Success in Logs
         run: |
@@ -57,8 +60,11 @@ jobs:
           fi
 
       - name: Verify Containers are Running
-        run: docker-compose ps
+        run: |
+          cd CloudCalculator/
+          docker-compose ps
 
       - name: Cleanup
         run: |
+          cd CloudCalculator/
           docker-compose down || exit 0

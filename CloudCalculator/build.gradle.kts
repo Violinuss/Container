@@ -1,5 +1,5 @@
 tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
-	mainClass.set("com.example.CloudCalculatorApplication")
+	mainClass.set("com.example.CloudCalculator.CloudCalculatorApplication")
 }
 
 sourceSets {

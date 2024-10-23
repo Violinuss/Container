@@ -13,6 +13,8 @@ import org.springframework.http.HttpMethod;
 
 import java.util.*;
 
+import static org.springframework.boot.web.servlet.server.Session.SessionTrackingMode.URL;
+
 @Service
 public class CloudCalculatorService {
 
@@ -57,6 +59,7 @@ public class CloudCalculatorService {
     public ResponseEntity<String> submitResults(Map<String, List<Result>> requestBody) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
+
 
         HttpEntity<Map<String, List<Result>>> request = new HttpEntity<>(requestBody, headers);
 

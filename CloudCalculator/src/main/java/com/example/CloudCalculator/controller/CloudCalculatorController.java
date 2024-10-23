@@ -32,6 +32,12 @@ public class CloudCalculatorController {
         return ResponseEntity.ok(response.getBody());
     }
 
+    @GetMapping("/result")
+    public ResponseEntity<List<Result>> getResult() {
+        List<Result> calculatedResults = cloudCalculatorService.calculateUsage();
+        return ResponseEntity.ok(calculatedResults);
+    }
+
 
     @PostMapping("/result")
     public ResponseEntity<String> receiveResults(@RequestBody Map<String, List<Result>> results) {

@@ -11,6 +11,8 @@ RUN gradle build --no-daemon
 
 FROM openjdk:17-jdk-slim
 
+RUN apt-get update && apt-get install -y curl
+
 WORKDIR /app
 
 COPY --from=builder /app/build/libs/*.jar app.jar

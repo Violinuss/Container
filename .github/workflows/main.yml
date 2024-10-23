@@ -1,19 +1,25 @@
 name: HTTP Status Check
 on:
   push:
-  workflow_dispatch:
+    branches: 
+    - main
 jobs:
-  check_http_status:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Check URL Status
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build Docker Compose
+        run: docker-compose up --build -d
+
+      - name: Run Tests
         run: |
-          response=$(curl -o /dev/null -s -w "%{http_code}\n" https://httpstat.us/500)
-          echo "HTTP Status Code: $response"
-          if [ "$response" -ne 200 ]; then 
-            echo "Unexpected HTTP status code. Expected 200." 
-            exit 1
-          fi
-          echo "The website returned the expected 200 status code."
+          curl http://localhost:8080/v1/dataset
+          curl http://localhost:8081/v1/result
+
+      - name: Shutdown Docker Compose
+        run: docker-compose down
+      
